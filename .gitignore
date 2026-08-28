@@ -1,0 +1,27 @@
+# 가상환경 및 캐시
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# 딥러닝 모델 가중치 및 엔진 (업로드 방지)
+*.pt
+*.onnx
+*.engine
+*.plan
+
+# 데이터셋 및 미디어
+*.zip
+*.tar.gz
+custom_rps_data/
+datasets/
+runs/
+*.mp4
+*.avi
+*.jpg
+*.png
+
+# 빌드 및 IDE 설정
+build/
+.vscode/
+.idea/

@@ -1,0 +1,55 @@
+# Gesture, GameState, GameResult Enums & Dataclasses
+from dataclasses import dataclass
+from enum import Enum, IntEnum, auto
+
+
+class Gesture(IntEnum):
+    """YOLO 모델 학습 클래스 순서와 1:1 매핑되는 제스처 열거형"""
+
+    PAPER = 0
+    ROCK = 1
+    SCISSORS = 2
+    NONE = auto()
+
+    @property
+    def display_name(self) -> str:
+        names = {
+            Gesture.PAPER: "PAPER (보)",
+            Gesture.ROCK: "ROCK (바위)",
+            Gesture.SCISSORS: "SCISSORS (가위)",
+            Gesture.NONE: "READY...",
+        }
+        return names.get(self, "UNKNOWN")
+
+
+class GameState(Enum):
+    """상태 머신 단계"""
+
+    IDLE = auto()  # 대기 상태 (시작 전)
+    COUNTDOWN = auto()  # 3, 2, 1 카운트다운
+    JUDGING = auto()  # 다수결 프레임 수집 및 판정
+    ROUND_RESULT = auto()  # 해당 라운드 결과 표시
+    MATCH_OVER = auto()  # 최종 세트 종료
+
+
+class GameResult(Enum):
+    """승패 판정 결과"""
+
+    PLAYER1_WIN = "PLAYER 1 WIN"
+    PLAYER2_WIN = "PLAYER 2 WIN"
+    DRAW = "DRAW"
+    INVALID = "INVALID (No Hand Detected)"
+
+
+@dataclass(slots=True, frozen=True)
+class Detection:
+    """단일 손 검출 결과 구조체"""
+
+    gesture: Gesture
+    confidence: float
+    bbox: tuple[int, int, int, int]  # (x1, y1, x2, y2)
+
+    @property
+    def center_x(self) -> float:
+        """PvP 좌/우 분할용 바운딩 박스 중심 X 좌표"""
+        return (self.bbox[0] + self.bbox[2]) / 2.0
