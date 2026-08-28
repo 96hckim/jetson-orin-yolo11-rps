@@ -1,4 +1,9 @@
-# AI 대전 모드 (God Mode / Normal)
+"""
+game/modes/pvp.py
+- 2인 로컬 대전 모드 (PvP).
+- 단일 카메라 프레임을 좌/우 화면으로 2분할하여 각 영역의 최고 신뢰도 제스처를 독립 판별.
+"""
+
 from game.modes.base import BaseGameMode
 from game.types import Detection, Gesture
 

@@ -1,4 +1,9 @@
-# game/modes/pve.py
+"""
+game/modes/pve.py
+- 플레이어 vs AI 대전 모드 (PvE).
+- 일반 모드(랜덤 셔플 선택) 및 엣지 실시간성을 활용한 무적 얌체 모드(God Mode) 지원.
+"""
+
 import random
 
 from configs.app_config import GamePlayConfig

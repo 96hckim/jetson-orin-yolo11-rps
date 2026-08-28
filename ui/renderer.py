@@ -1,4 +1,9 @@
-# ui/renderer.py
+"""
+ui/renderer.py
+- 게임 HUD, 상태별 텍스트 배너, 바운딩 박스, 투명 PNG 아이콘 합성을 전담하는 렌더러.
+- OpenCV 프레임 위에 알파 블렌딩(Alpha Blending) 및 반응형 중앙 정렬 그래픽 오버레이 출력.
+"""
+
 import time
 from pathlib import Path
 from typing import ClassVar

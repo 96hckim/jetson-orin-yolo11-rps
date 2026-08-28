@@ -1,4 +1,9 @@
-# 비동기성 고려 메인 이벤트 루프
+"""
+main.py
+- TensorRPS 애플리케이션의 메인 이벤트 루프 및 실행 엔트리포인트.
+- 저지연 카메라 캡처, TensorRT 제스처 탐지, 게임 모드 FSM 갱신, UI 렌더링을 동기화하여 처리.
+"""
+
 import sys
 import time
 

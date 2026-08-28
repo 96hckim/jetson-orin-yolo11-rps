@@ -1,4 +1,9 @@
-# 고속 전/후처리 및 YOLO 검출 파이프라인
+"""
+core/detector.py
+- YOLOv11 모델의 엔드투엔드(End-to-End) 객체 탐지 파이프라인.
+- 종횡비 보존 Letterbox 전처리, TensorRT 추론 연계, NumPy 벡터화 및 C++ NMS 후처리 수행.
+"""
+
 import cv2
 import numpy as np
 from configs.app_config import VisionConfig

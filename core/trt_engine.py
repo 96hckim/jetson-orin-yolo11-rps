@@ -1,4 +1,9 @@
-# RAII 기반 TensorRT GPU 추론 엔진
+"""
+core/trt_engine.py
+- TensorRT 10.x 기반 고성능 GPU 비동기 추론 래퍼.
+- Host/Device 메모리 사전 할당(Zero-Allocation) 및 CudaStream 비동기 전송 파이프라인 구현.
+"""
+
 from pathlib import Path
 
 import numpy as np

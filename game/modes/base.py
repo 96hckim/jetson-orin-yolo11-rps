@@ -1,3 +1,9 @@
+"""
+game/modes/base.py
+- 게임 모드 확장을 위한 Strategy Pattern 기반 기본 추상 클래스(Base Class).
+- PvP, PvE 등 세부 모드에서 구현할 제스처 추출 인터페이스(extract_player_gestures) 정의.
+"""
+
 from abc import ABC, abstractmethod
 
 from configs.app_config import GamePlayConfig

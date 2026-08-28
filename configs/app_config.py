@@ -1,4 +1,9 @@
-# 불변(Immutable) 설정 데이터클래스
+"""
+configs/app_config.py
+- 프로젝트 전역의 하이퍼파라미터 및 설정을 중앙 관리하는 모듈.
+- Vision(TensorRT), Camera(V4L2), GamePlay 설정을 불변(frozen=True) 데이터클래스로 제공.
+"""
+
 from dataclasses import dataclass
 from pathlib import Path
 

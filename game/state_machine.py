@@ -1,4 +1,9 @@
-# 3단계 상태 전이 및 윈도우 다수결(Voting) 엔진
+"""
+game/state_machine.py
+- 게임 수명 주기(IDLE -> COUNTDOWN -> JUDGING -> ROUND_RESULT -> MATCH_OVER) 상태 머신.
+- 단일 프레임 오인식을 방지하기 위한 롤링 윈도우 기반 다수결(Majority Voting) 판정 알고리즘 탑재.
+"""
+
 import time
 from collections import Counter, deque
 from dataclasses import dataclass, field

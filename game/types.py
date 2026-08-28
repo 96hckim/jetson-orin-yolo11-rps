@@ -1,4 +1,9 @@
-# Gesture, GameState, GameResult Enums & Dataclasses
+"""
+game/types.py
+- 프로젝트 전역에서 공유하는 핵심 데이터 타입, 열거형(Enum) 및 불변 구조체 정의.
+- Gesture(제스처), GameState(상태 머신 단계), GameResult(승패 판정), Detection(손 검출 결과) 정의.
+"""
+
 from dataclasses import dataclass
 from enum import Enum, IntEnum, auto
 

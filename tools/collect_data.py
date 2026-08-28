@@ -1,3 +1,9 @@
+"""
+tools/collect_data.py
+- Jetson 엣지 환경 맞춤형 커스텀 데이터셋(가위/바위/보/배경) 실시간 연사 수집 도구.
+- 라벨별 디렉터리 자동 분류 및 무손실 원본 프레임 저장 유틸리티.
+"""
+
 import os
 import time
 
