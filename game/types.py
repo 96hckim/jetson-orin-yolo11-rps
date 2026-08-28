@@ -8,6 +8,29 @@ from dataclasses import dataclass
 from enum import Enum, IntEnum, auto
 
 
+class GameMode(Enum):
+    """게임 운영 모드 열거형"""
+
+    PVP = auto()
+    PVE_NORMAL = auto()
+    PVE_GOD = auto()
+
+    @property
+    def display_name(self) -> str:
+        """HUD 및 터미널 출력용 모드 명칭"""
+        names = {
+            GameMode.PVP: "PVP",
+            GameMode.PVE_NORMAL: "PVE_NORMAL",
+            GameMode.PVE_GOD: "PVE_GOD",
+        }
+        return names[self]
+
+    @property
+    def is_pvp(self) -> bool:
+        """2인 대전 여부 플래그"""
+        return self == GameMode.PVP
+
+
 class Gesture(IntEnum):
     """YOLO 모델 학습 클래스 순서와 1:1 매핑되는 제스처 열거형"""
 
