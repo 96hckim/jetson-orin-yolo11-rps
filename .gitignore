@@ -21,6 +21,12 @@ runs/
 *.jpg
 *.png
 
+# assets 디렉터리 내 리소스는 추적 허용
+!assets/*.png
+!assets/**/*.png
+!assets/*.jpg
+!assets/**/*.jpg
+
 # 빌드 및 IDE 설정
 build/
 .vscode/
