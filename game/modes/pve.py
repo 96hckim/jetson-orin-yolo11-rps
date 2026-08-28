@@ -1,4 +1,4 @@
-# 2인 대전 모드 (좌우 화면 분할)
+# game/modes/pve.py
 import random
 
 from configs.app_config import GamePlayConfig
@@ -9,7 +9,7 @@ from game.types import Detection, GameState, Gesture
 
 
 class PvEMode(BaseGameMode):
-    """플레이어 vs AI 대전 모드"""
+    """플레이어 vs AI 대전 모드 (일반 / 무적 얌체 모드 지원)"""
 
     def __init__(self, config: GamePlayConfig, god_mode: bool = False) -> None:
         super().__init__(config)
@@ -18,7 +18,6 @@ class PvEMode(BaseGameMode):
 
     def start_round(self) -> None:
         super().start_round()
-        # 일반 모드일 경우 카운트다운 시작 시점에 PC 패를 미리 결정
         if not self.god_mode:
             self._pc_fixed_gesture = random.choice(
                 [Gesture.ROCK, Gesture.PAPER, Gesture.SCISSORS]
@@ -29,19 +28,20 @@ class PvEMode(BaseGameMode):
         detections: list[Detection],
         frame_width: int,
     ) -> tuple[Gesture, Gesture]:
-        # 화면 내에서 가장 신뢰도 높은 손을 플레이어의 패로 선택
         p1_gesture = Gesture.NONE
         if detections:
             best_det = max(detections, key=lambda d: d.confidence)
             p1_gesture = best_det.gesture
 
-        # 상태에 따른 AI 패 결정
-        if self.state_machine.context.state == GameState.COUNTDOWN:
-            # 카운트다운 중에는 룰렛처럼 랜덤하게 섞어서 출력
+        current_state = self.state_machine.context.state
+
+        if current_state == GameState.COUNTDOWN:
+            # 카운트다운 룰렛 슬롯머신 연출용 패
             pc_gesture = random.choice([Gesture.ROCK, Gesture.PAPER, Gesture.SCISSORS])
-        elif self.state_machine.context.state == GameState.JUDGING:
+            # UI가 카운트다운 중에도 읽을 수 있도록 버퍼에 임시 기록
+            self.state_machine.context.p2_vote_buffer.append(pc_gesture)
+        elif current_state == GameState.JUDGING:
             if self.god_mode:
-                # 젯슨 초저지연 연계: 유저 패를 실시간으로 읽어 무조건 이기는 패 선택
                 pc_gesture = (
                     get_counter_gesture(p1_gesture)
                     if p1_gesture != Gesture.NONE
