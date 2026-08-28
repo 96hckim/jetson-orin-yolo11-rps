@@ -23,10 +23,10 @@ class YOLOv11Detector:
     @staticmethod
     def _letterbox(
         image: np.ndarray,
-        target_shape: tuple[int, int] = (320, 320),
+        target_shape: tuple[int, int] = (640, 640),
         color: tuple[int, int, int] = (114, 114, 114),
     ) -> tuple[np.ndarray, float, int, int]:
-        """종횡비를 유지하며 패딩을 추가하는 고속 리사이즈 함수"""
+        """종횡비를 유지하며 여백에 패딩을 추가하는 고속 리사이즈 함수"""
         orig_h, orig_w = image.shape[:2]
         target_h, target_w = target_shape
         ratio = min(target_w / orig_w, target_h / orig_h)
@@ -52,11 +52,11 @@ class YOLOv11Detector:
         return padded, ratio, pad_x, pad_y
 
     def preprocess(self, frame: np.ndarray) -> tuple[np.ndarray, float, int, int]:
-        """BGR 프레임을 1x3xHxW 정규화 Tensor로 변환"""
+        """BGR 프레임을 1x3xHxW 크기의 정규화 텐서(float32)로 변환"""
         rgb_img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         padded_img, ratio, pad_x, pad_y = self._letterbox(rgb_img, self.input_size)
 
-        # HWC -> CHW 변환 및 메모리 연속성 확보
+        # HWC -> CHW 포맷 변환, 정규화(0~1) 및 메모리 연속성 확보
         tensor = padded_img.transpose(2, 0, 1).astype(np.float32) * (1.0 / 255.0)
         tensor = np.ascontiguousarray(tensor[None, ...])
         return tensor, ratio, pad_x, pad_y
@@ -72,15 +72,15 @@ class YOLOv11Detector:
         """NumPy 벡터화 및 OpenCV C++ NMS 기반 초고속 후처리"""
         orig_h, orig_w = orig_shape
 
-        # (1, 7, 2100) -> (2100, 7) 형상 복원
-        # 구조: [cx, cy, w, h, Paper, Rock, Scissors]
+        # (1, 7, 8400) -> (8400, 7) 형상 복원
+        # 각 행 구조: [cx, cy, w, h, Paper_score, Rock_score, Scissors_score]
         detections_raw = raw_output.reshape(self.engine.output_shape)[0].T
 
         cls_scores = detections_raw[:, 4:7]
         scores = np.max(cls_scores, axis=1)
         class_ids = np.argmax(cls_scores, axis=1)
 
-        # 1차 Confidence 임계값 필터링
+        # 1차 신뢰도(Confidence) 임계값 필터링
         mask = scores >= self.config.conf_threshold
         if not np.any(mask):
             return []
@@ -89,7 +89,7 @@ class YOLOv11Detector:
         filtered_scores = scores[mask]
         filtered_classes = class_ids[mask]
 
-        # Letterbox 역연산 -> [x1, y1, width, height] 변환
+        # Letterbox 역연산: 정규화 좌표 -> 원본 이미지 픽셀 [x1, y1, width, height] 변환
         cx, cy, w, h = (
             boxes[:, 0],
             boxes[:, 1],
@@ -104,7 +104,7 @@ class YOLOv11Detector:
         boxes_xywh = np.stack([x1, y1, box_w, box_h], axis=1).astype(int).tolist()
         scores_list = filtered_scores.tolist()
 
-        # OpenCV C++ NMS 실행
+        # OpenCV C++ NMS(Non-Maximum Suppression) 실행
         indices = cv2.dnn.NMSBoxes(
             boxes_xywh,
             scores_list,

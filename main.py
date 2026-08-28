@@ -50,13 +50,15 @@ def main() -> None:
         print(f"❌ 카메라 디바이스({config.camera.device_id})를 열 수 없습니다.")
         sys.exit(1)
 
-    # 게임 모드 Enum 키 기반 초기화
+    # 게임 모드 인스턴스 맵핑
     modes: dict[GameMode, BaseGameMode] = {
         GameMode.PVP: PvPMode(config.game),
         GameMode.PVE_NORMAL: PvEMode(config.game, god_mode=False),
         GameMode.PVE_GOD: PvEMode(config.game, god_mode=True),
     }
     current_mode = GameMode.PVP
+
+    window_title = "TensorRPS - Jetson Embedded Engine"
 
     print("🚀 TensorRPS 시스템 가동 시작!")
     print("   - [SPACE]: 라운드 시작")
@@ -76,13 +78,13 @@ def main() -> None:
                 print("⚠️ 프레임 수신 실패")
                 break
 
-            # 거울 모드(좌우 반전) 적용
+            # 거울 모드 (좌우 반전) 적용
             frame = cv2.flip(frame, 1)
 
             # 1. 딥러닝 추론 (손 위치 및 제스처 검출)
             detections = detector.detect(frame)
 
-            # 2. 현재 활성화된 게임 모드 업데이트
+            # 2. 활성 게임 모드 FSM 업데이트
             active_game = modes[current_mode]
             context = active_game.update(detections, frame.shape[1])
 
@@ -93,7 +95,7 @@ def main() -> None:
             curr_fps = 1.0 / max(dt, 1e-6)
             fps = 0.9 * fps + 0.1 * curr_fps if fps > 0 else curr_fps
 
-            # 4. 종합 화면 렌더링
+            # 4. 화면 종합 렌더링
             renderer.render(
                 frame,
                 context,
@@ -102,10 +104,15 @@ def main() -> None:
                 fps,
             )
 
-            cv2.imshow("TensorRPS - Jetson Embedded Engine", frame)
+            cv2.imshow(window_title, frame)
 
-            # 5. 키 이벤트 핸들링
+            # 5. 키 이벤트 핸들링 및 OS 창 이벤트 처리
             key = cv2.waitKey(1) & 0xFF
+
+            # 창 닫기(X) 상태 검사
+            if cv2.getWindowProperty(window_title, cv2.WND_PROP_VISIBLE) < 1:
+                break
+
             if key in (ord("q"), 27):  # Q or ESC
                 break
             elif key == ord(" "):  # Space

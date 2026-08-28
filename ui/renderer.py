@@ -29,7 +29,7 @@ from ui.colors import (
 
 
 class GameUIRenderer:
-    """게임 HUD, 바운딩 박스 및 고품질 그래픽 오버레이 렌더러"""
+    """게임 HUD, 바운딩 박스 및 그래픽 오버레이 렌더러"""
 
     FONT_MAIN: int = cv2.FONT_HERSHEY_SIMPLEX
     FONT_HEAD: int = cv2.FONT_HERSHEY_DUPLEX
@@ -50,6 +50,7 @@ class GameUIRenderer:
         self.icons: dict[Gesture, np.ndarray | None] = self._load_icons()
 
     def _load_icons(self) -> dict[Gesture, np.ndarray | None]:
+        """assets 폴더에서 가위바위보 아이콘 PNG 로드"""
         loaded: dict[Gesture, np.ndarray | None] = {}
         for gesture, filename in self._ICON_FILES.items():
             path = self.assets_dir / filename
@@ -93,7 +94,7 @@ class GameUIRenderer:
         color: tuple[int, int, int],
         alpha: float = 0.75,
     ) -> None:
-        """ROI 영역만 추출하여 인플레이스 블렌딩 (전체 프레임 복사 오버헤드 제거)"""
+        """ROI 영역만 추출하여 인플레이스 블렌딩 (전체 복사 메모리 오버헤드 제거)"""
         h, w = frame.shape[:2]
         x1_c, y1_c = max(0, x1), max(0, y1)
         x2_c, y2_c = min(w, x2), min(h, y2)
@@ -189,9 +190,9 @@ class GameUIRenderer:
             )
 
             label = f"{det.gesture.name} {det.confidence:.2f}"
-            (tw, th), baseline = cv2.getTextSize(label, self.FONT_MAIN, 0.45, 1)
+            (tw, th), _ = cv2.getTextSize(label, self.FONT_MAIN, 0.45, 1)
 
-            # 상단 경계선 안전 처리 (y1이 너무 높으면 박스 안쪽으로 렌더링)
+            # 상단 경계선 안전 클램핑 (y1이 너무 낮으면 박스 안쪽으로 렌더링)
             label_top = y1 - th - 8 if y1 - th - 8 > 0 else y1 + 2
             label_bottom = y1 if y1 - th - 8 > 0 else y1 + th + 8
             text_y = y1 - 4 if y1 - th - 8 > 0 else y1 + th + 4
@@ -305,7 +306,7 @@ class GameUIRenderer:
             cv2.LINE_AA,
         )
 
-        # 4. PvP 분할선 (점선) 또는 PvE PC 상태 카드
+        # 4. PvP 분할선 (바닥 끝까지 연결) 또는 PvE PC 선택 카드
         if mode.is_pvp:
             for y_pos in range(54, h, 16):
                 cv2.line(
