@@ -5,6 +5,12 @@ YOLOv11 커스텀 제스처 탐지 모델과 TensorRT 10.x 가속 엔진을 결�
 
 ---
 
+## 🎬 Demonstration
+
+> 💡 **Full Demo Video**: https://github.com/user-attachments/assets/56a1ff8a-05af-4022-92a5-0b77f87816be
+
+---
+
 ## 🎮 Key Features & Game Modes
 
 - **PvP (2인 로컬 대전 모드)**: 화면을 좌우로 분할하여 양측 플레이어의 손 제스처를 독립적으로 탐지 및 채택하여 대전을 진행합니다.
