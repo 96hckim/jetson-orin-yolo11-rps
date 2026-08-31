@@ -64,7 +64,6 @@ YOLOv11 커스텀 제스처 탐지 모델과 TensorRT 10.x 가속 엔진을 결�
 │   ├── colors.py            # BGR 팔레트 및 제스처별 테마 색상 정의
 │   └── renderer.py          # HUD, 스코어보드, 바운딩 박스, 하단 티커 오버레이 렌더러
 └── main.py                  # 메인 이벤트 루프 및 V4L2 카메라 캡처 엔트리포인트
-
 ```
 
 ---
@@ -85,7 +84,6 @@ YOLOv11 커스텀 제스처 탐지 모델과 TensorRT 10.x 가속 엔진을 결�
 ```bash
 # Jetson 환경 필수 패키지
 pip install numpy opencv-python pycuda
-
 ```
 
 ### 2. Model Preparation
@@ -94,14 +92,12 @@ YOLOv11 기반 `.engine` 파일을 `models/` 디렉터리에 배치합니다.
 
 ```text
 models/rps_yolo11n_custom_640.engine
-
 ```
 
 ### 3. Run
 
 ```bash
 python main.py
-
 ```
 
 ---
