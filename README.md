@@ -7,7 +7,7 @@ YOLOv11 커스텀 제스처 탐지 모델과 TensorRT 10.x 가속 엔진을 결�
 
 ## 🎬 Demonstration
 
-> 💡 **Full Demo Video**: https://github.com/user-attachments/assets/56a1ff8a-05af-4022-92a5-0b77f87816be
+https://github.com/user-attachments/assets/56a1ff8a-05af-4022-92a5-0b77f87816be
 
 ---
 
